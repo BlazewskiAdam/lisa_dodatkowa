@@ -6,12 +6,13 @@ using namespace std;
 
 // ZADANIE 1
 
-struct wezel {
-    int obwod;
-    int pole;
-    string nazwa;
-    wezel *next;
-    wezel *prev;
+//pojedyńczy element listy (węzeł)
+    struct wezel {
+        int obwod;
+        int pole;
+        string nazwa;
+        wezel *next;
+        wezel *prev;
     wezel(int obwod, int pole, string nazwa) : obwod(obwod), pole(pole), nazwa(nazwa), next(nullptr), prev(nullptr) {}
 };
 
@@ -31,7 +32,7 @@ class lista_dwukierunkowa {
             usun_przod();
         }
     }
-
+    //dodawanie elementu na poczatek listy
     void dodaj_na_poczatek(int wartosc_pola, int obwod, string nazwa) {
         wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa);
         new_wezel->next = head;
@@ -39,11 +40,12 @@ class lista_dwukierunkowa {
         rozmiar++;
         if (new_wezel->next) {
             new_wezel->next->prev = new_wezel;
-        } else {
+        } else { // przypadek, gdy lista jest pusta
             tail = new_wezel;
         }
     }
 
+    //dodawanie elementu na koneic listy
     void dodaj_na_koniec(int wartosc_pola, int obwod, string nazwa) {
         wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa);
         new_wezel->prev = tail;
@@ -51,7 +53,7 @@ class lista_dwukierunkowa {
         rozmiar++;
         if (new_wezel->prev) {
             new_wezel->prev->next = new_wezel;
-        } else {
+        } else { //przypadek, gdy lista jest pusta
             head = new_wezel;
         }
     }
@@ -60,7 +62,7 @@ class lista_dwukierunkowa {
         if (wybrany == head) {
             dodaj_na_poczatek(wartosc_pola, obwod, nazwa);
         } else {
-            wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa);
+            wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa); //dynamiczne zaalokowanie nowego węzła
             new_wezel->next = wybrany;
             new_wezel->prev = wybrany->prev;
             rozmiar++;
@@ -69,19 +71,7 @@ class lista_dwukierunkowa {
         }
     }
 
-    void dodaj_za_wybranym(int wartosc_pola, int obwod, string nazwa, wezel *wybrany) {
-        if (wybrany == tail) {
-            dodaj_na_koniec(wartosc_pola, obwod, nazwa);
-        } else {
-            wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa);
-            new_wezel->next = wybrany->next;
-            new_wezel->prev = wybrany;
-            rozmiar++;
-            wybrany->next->prev = new_wezel;
-            wybrany->next = new_wezel;
-        }
-    }
-
+    //usuwanie wybranego elementu
     void usun_wybrany(wezel *wybrany) {
         rozmiar--;
         if (wybrany->prev) {
@@ -97,18 +87,21 @@ class lista_dwukierunkowa {
         delete wybrany;
     }
 
+    //usuwanie pierwszego elementu listy
     void usun_przod() {
         if (rozmiar) {
             usun_wybrany(head);
         }
     }
 
+    //usuwanie ostatniego elementu listy;
     void usun_tyl() {
         if (rozmiar) {
-            usun_wybrany(tail);aaa
+            usun_wybrany(tail);
         }
     }
 
+    //wyświetlanie listy w zależności od wartości bool
     void wyswietl(bool od_przodu) {
         wezel *current = od_przodu == true ? head : tail;
         while (current != nullptr) {
@@ -130,9 +123,10 @@ class lista_dwukierunkowa {
         int i = 0;
         wezel *current = head;
         while (i != indeks) {
+            i++;
             current = current->next;
         }
-        return current; // zwraca adres
+        return current;
     }
 };
 
@@ -154,15 +148,13 @@ struct dane_figury {
     int pole;
     int obwod;
 };
-dane_figury figura;
-
 
 int main() {
     int wybor;
     bool pokaz_menu = true;
-
+    dane_figury figura;
     lista_dwukierunkowa lista;
-
+    wezel* w;
     //TODO: dodac wywolanie funkcji z klasy i sprawdzic czy wszystko bangla
     while (pokaz_menu) {
         pokazMenu();
@@ -170,35 +162,36 @@ int main() {
         switch (wybor) {
             case 1:
                 cout << "Podaj nazwe figury: ";
-            cin >> figura.nazwa;
-            cout << "Podaj pole: ";
-            cin >> figura.pole;
-            cout << "Podaj obwod: ";
-            cin >> figura.obwod;
-            lista.dodaj_na_poczatek(figura.pole,figura.obwod,figura.nazwa);
+                cin >> figura.nazwa;
+                cout << "Podaj pole: ";
+                cin >> figura.pole;
+                cout << "Podaj obwod: ";
+                cin >> figura.obwod;
+                lista.dodaj_na_poczatek(figura.pole,figura.obwod,figura.nazwa);
                 break;
 
             case 2:
                 cout << "Podaj nazwe figury: ";
-            cin >> figura.nazwa;
-            cout << "Podaj pole: ";
-            cin >> figura.pole;
-            cout << "Podaj obwod: ";
-            cin >> figura.obwod;
-            lista.dodaj_na_koniec(figura.pole,figura.obwod,figura.nazwa);
+                cin >> figura.nazwa;
+                cout << "Podaj pole: ";
+                cin >> figura.pole;
+                cout << "Podaj obwod: ";
+                cin >> figura.obwod;
+                lista.dodaj_na_koniec(figura.pole,figura.obwod,figura.nazwa);
                 break;
 
             case 3:
                 int indeks;
                 cout << "Podaj nazwe figury: ";
-            cin >> figura.nazwa;
-            cout << "Podaj pole: ";
-            cin >> figura.pole;
-            cout << "Podaj obwod: ";
-            cin >> figura.obwod;
-            cout << "podaj indeks: ";
-            cin >> indeks;
-           //lista.dodaj_za_wybranym(figura.pole,figura.obwod,figura.nazwa,);  nie działa!!!!
+                cin >> figura.nazwa;
+                cout << "Podaj pole: ";
+                cin >> figura.pole;
+                cout << "Podaj obwod: ";
+                cin >> figura.obwod;
+                cout << "podaj indeks: ";
+                cin >> indeks;
+                w=lista.znajdz_z_indeksu(indeks);
+                lista.dodaj_przed_wybranym(figura.pole,figura.obwod,figura.nazwa,w);
                 break;
 
             case 4:
@@ -232,6 +225,6 @@ int main() {
 
         cout << endl;
     }
-    cout << lista.znajdz_z_indeksu(3);
+
     return 0;
 }
