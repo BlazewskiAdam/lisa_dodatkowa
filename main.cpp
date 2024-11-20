@@ -1,19 +1,20 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-
 using namespace std;
 
 // ZADANIE 1
 
-//pojedyńczy element listy (węzeł)
+//pojedyĹ„czy element listy (wÄ™zeĹ‚)
     struct wezel {
         int obwod;
         int pole;
         string nazwa;
         wezel *next;
         wezel *prev;
-    wezel(int obwod, int pole, string nazwa) : obwod(obwod), pole(pole), nazwa(nazwa), next(nullptr), prev(nullptr) {}
+        //konstruktor, ktĂłry inicjalizuje obiekt struktury wÄ™zeĹ‚
+        //ustawia rĂłwnieĹĽ potrzebne wartoĹ›ci na podstawie danych argumentĂłw oraz 2 wskaĹşniki na wartoĹ›c zero.
+        wezel(int obwod, int pole, string nazwa) : obwod(obwod), pole(pole), nazwa(nazwa), next(nullptr), prev(nullptr) {}
 };
 
 class lista_dwukierunkowa {
@@ -23,68 +24,74 @@ class lista_dwukierunkowa {
     unsigned rozmiar;
 
    public:
-    // konstruktor, ustawienie wskaźników na wartośc zero
+    // konstruktor, ustawienie wskaĹşnikĂłw i rozmiaru listy na wartoĹ›c zero
     lista_dwukierunkowa() : head(nullptr), tail(nullptr), rozmiar(0) {}
 
-    // destruktor, który zwalnia pamięć, usuwając wszystkie węzły, gdy usuwamy listę
+    // destruktor, ktĂłry zwalnia pamiÄ™Ä‡, usuwajÄ…c wszystkie wÄ™zĹ‚y, gdy usuwamy listÄ™
     ~lista_dwukierunkowa() {
         while (rozmiar) {
             usun_przod();
         }
     }
     //dodawanie elementu na poczatek listy
-    void dodaj_na_poczatek(int wartosc_pola, int obwod, string nazwa) {
-        wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa);
-        new_wezel->next = head;
-        head = new_wezel;
+    void dodaj_na_poczatek(int pole, int obwod, string nazwa) {
+        wezel *nowy_wezel = new wezel(obwod, pole, nazwa); //dynamiczne zaalokowanie nowego wÄ™zĹ‚a
+        nowy_wezel->next = head; //ustawienie wskaĹşnika next noewgo wÄ™zĹ‚a na head
+        head = nowy_wezel; //aktualizacja head na nowy wÄ™zeĹ‚
         rozmiar++;
-        if (new_wezel->next) {
-            new_wezel->next->prev = new_wezel;
+        if (nowy_wezel->next) {
+            nowy_wezel->next->prev = nowy_wezel; //ustawienie wskaĹşnika prev poprzedniego wÄ™zĹ‚a na nowy
         } else { // przypadek, gdy lista jest pusta
-            tail = new_wezel;
+            tail = nowy_wezel;
         }
     }
 
     //dodawanie elementu na koneic listy
-    void dodaj_na_koniec(int wartosc_pola, int obwod, string nazwa) {
-        wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa);
-        new_wezel->prev = tail;
-        tail = new_wezel;
+    void dodaj_na_koniec(int pole, int obwod, string nazwa) {
+        wezel *nowy_wezel = new wezel(obwod, pole, nazwa); //dynamiczne zaalokowanie nowego wÄ™zĹ‚a
+        nowy_wezel->prev = tail; //ustawienie wskaĹşnika prev nowego wÄ™zĹ‚a na tail
+        tail = nowy_wezel;// aktualizacja tail na nowy wÄ™zeĹ‚
         rozmiar++;
-        if (new_wezel->prev) {
-            new_wezel->prev->next = new_wezel;
+        if (nowy_wezel->prev) {
+            nowy_wezel->prev->next = nowy_wezel; //ustawienie wskaĹşnika next poprzedniego wÄ™zĹ‚a na nowy
         } else { //przypadek, gdy lista jest pusta
-            head = new_wezel;
+            head = nowy_wezel;
         }
     }
 
-    void dodaj_przed_wybranym(int wartosc_pola, int obwod, string nazwa, wezel *wybrany) {
+    void dodaj_na_wybrany(int pole, int obwod, string nazwa, wezel *wybrany) {
         if (wybrany == head) {
-            dodaj_na_poczatek(wartosc_pola, obwod, nazwa);
-        } else {
-            wezel *new_wezel = new wezel(obwod, wartosc_pola, nazwa); //dynamiczne zaalokowanie nowego węzła
-            new_wezel->next = wybrany;
-            new_wezel->prev = wybrany->prev;
+            dodaj_na_poczatek(pole, obwod, nazwa);
+        }
+        else if (wybrany == tail) {
+            dodaj_na_koniec(pole, obwod, nazwa);
+        }
+        else {
+            wezel *nowy_wezel = new wezel(obwod, pole, nazwa); // dynamiczne zaalokowanie nowego wÄ™zĹ‚a
+            nowy_wezel->next = wybrany;
+            nowy_wezel->prev = wybrany->prev; //ustawienie wskaĹşnika prev nowego wÄ™zĹ‚a na wartoĹ›Ä‡ prev i-tego wÄ™zĹ‚a
+            wybrany->prev->next = nowy_wezel; // Ustawienie wskaĹşnika next poprzednika i-tego wÄ™zĹ‚a (wybrany->prev) na nowy wÄ™zeĹ‚.
+            wybrany->prev = nowy_wezel;
+            // po danych instrukcjach "wypychamy" o 1 dalej dany element oraz wstawiamy nowy na jego miejsce
             rozmiar++;
-            wybrany->prev->next = new_wezel;
-            wybrany->prev = new_wezel;
         }
     }
+
 
     //usuwanie wybranego elementu
     void usun_wybrany(wezel *wybrany) {
         rozmiar--;
         if (wybrany->prev) {
-            wybrany->prev->next = wybrany->next;
+            wybrany->prev->next = wybrany->next; //ustawienie wskaĹşnika next poprzednika "wybrany" na "wybrany -> next"
         } else {
             head = wybrany->next;
         }
         if (wybrany->next) {
-            wybrany->next->prev = wybrany->prev;
+            wybrany->next->prev = wybrany->prev; //ustawienie wskaĹşnika prev nastÄ™pnika "wybrany" na "wybrany -> prev"
         } else {
             tail = wybrany->prev;
         }
-        delete wybrany;
+         delete wybrany; //usuwamy dany wÄ™zeĹ‚
     }
 
     //usuwanie pierwszego elementu listy
@@ -101,18 +108,23 @@ class lista_dwukierunkowa {
         }
     }
 
-    //wyświetlanie listy w zależności od wartości bool
+    //wyĹ›wietlanie listy w zaleĹĽnoĹ›ci od wartoĹ›ci bool
     void wyswietl(bool od_przodu) {
-        wezel *current = od_przodu == true ? head : tail;
-        while (current != nullptr) {
-            cout << "Obwod: " << current->obwod << ", Nazwa: " << current->nazwa
-                 << ", Pole: " << current->pole << endl;
-            current = od_przodu == true ? current->next : current->prev;
+        wezel *current;
+        if (od_przodu)
+            current = head;
+        else
+            current = tail;
+        while (current != nullptr) { // przejĹ›cie przez kaĹĽdy element listy
+            cout << "Nazwa: " << current->nazwa << ", Pole: " << current->pole << ", Obwod: " << current->obwod << endl; //wyĹ›wietlanie danych wÄ™zĹ‚Ăłw listy za pomocÄ… wskaĹşnikĂłw
+            if (od_przodu)
+                current = current->next;
+            else
+                current = current->prev;
         }
-        cout << endl;  // Nowa linia po wyświetleniu całej listy
     }
 
-    // TODO: Czy to na pewno dziala?
+    //znajdowanie wskaĹşnika w liĹ›cie o podanym indeksie
     wezel *znajdz_z_indeksu(int indeks) {
         if (indeks == 0) {
             return head;
@@ -121,10 +133,10 @@ class lista_dwukierunkowa {
             return tail;
         }
         int i = 0;
-        wezel *current = head;
+        wezel *current = head; //zadeklarowanie wskaĹşnika pomocniczego
         while (i != indeks) {
             i++;
-            current = current->next;
+            current = current->next; //szukanie wskaĹşnika o podanym indeksie po caĹ‚ej liĹ›cie
         }
         return current;
     }
@@ -155,7 +167,6 @@ int main() {
     dane_figury figura;
     lista_dwukierunkowa lista;
     wezel* w;
-    //TODO: dodac wywolanie funkcji z klasy i sprawdzic czy wszystko bangla
     while (pokaz_menu) {
         pokazMenu();
         cin >> wybor;
@@ -191,7 +202,8 @@ int main() {
                 cout << "podaj indeks: ";
                 cin >> indeks;
                 w=lista.znajdz_z_indeksu(indeks);
-                lista.dodaj_przed_wybranym(figura.pole,figura.obwod,figura.nazwa,w);
+                cout << w;
+                lista.dodaj_na_wybrany(figura.pole,figura.obwod,figura.nazwa,w);
                 break;
 
             case 4:
@@ -203,7 +215,11 @@ int main() {
                 break;
 
             case 6:
-           //     lista.usun_wybrany() // rowniez nie dziala, albo jestem glupi
+                int indeks_1;
+                cout << "podaj indeks: ";
+                cin >> indeks_1;
+                w = lista.znajdz_z_indeksu(indeks_1);
+                lista.usun_wybrany(w);
                 break;
 
             case 7:
