@@ -1,0 +1,18 @@
+# Build directories
+build/
+cmake-build-debug/
+
+# Compiled executables (specific paths, not source directories)
+Cpp_Extra_exc/zadanie_1/zadanie_1
+Cpp_Extra_exc/zadanie__2/zadanie__2
+Cpp_Extra_exc/zadanie__2/function_dispatcher
+Cpp_Extra_exc/zadanie__5/zadanie__5
+
+# Object files
+*.o
+*.obj
+
+# CMake cache
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
